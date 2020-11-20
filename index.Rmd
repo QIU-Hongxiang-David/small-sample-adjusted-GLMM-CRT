@@ -1,0 +1,77 @@
+---
+title: "Electronic Table"
+output: html_document
+---
+
+This page holds electronic tables of type I error rates of various small-sample corrected tests in logistic and Poisson GLMMs under a cluster-randomized trial setting from the two simulations in "Evaluating tests for cluster-randomized trials with few clusters under generalized linear mixed models with covariate adjustment: a simulation study". Both electronic tables are filterable and sortable. The raw data are available at [simulation1_typeIerror.csv](https://github.com/QIU-Hongxiang-David/small-sample-adjusted-GLMM-CRT/simulation1_typeIerror.csv) and [simulation2_typeIerror.csv](https://github.com/QIU-Hongxiang-David/small-sample-adjusted-GLMM-CRT/simulation2_typeIerror.csv).
+
+Variables in the tables:
+
+- `outcome.type`: type of the outcome (binary vs count).
+- `n.cluster`: number of clusters (10 vs 20).
+- `mean.size`: mean cluster size (50 vs 100).
+- `coef.var`: coefficient of variation of cluster sizes, the ratio of standard deviation of cluster sizes to mean cluster size (0, 0.75, 1.5).
+- `ICC`: intraclass correlation coefficient (0.001, 0.01, 0.05, 0.1, 0.2). A high ICC corresponds to a high variance of the random intercept. More details in the paper. This variable is defined in the following paper:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nakagawa S, Johnson PC, Schielzeth H. The coefficient of determination R2 and intra-class correlation coefficient from generalized linear mixed-effects models revisited and expanded. *Journal of the Royal Society Interface* 2017; 14(134): 20170213.
+
+- `ICC2`: mean intraclass correlation coefficient under the alternative definition based on linear mixed models. This is called the *mean LMM ICC* in the paper. Unlike `ICC` which is set to fixed values, `ICC2` is computed from simulation and reported as a reference. More details in the paper. We refer to the following papers for this definition:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Donner A, Koval JJ. The estimation of intraclass correlation in the analysis of family data. *Biometrics* 1980: 19–25.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stanish WM, Taylor N. Estimation of the intraclass correlation coefficient for the analysis of covariance model. *The American Statistician* 1983; 37(3): 221–224.
+
+- `model`: fitted model (1, 2, 3, 4). More details in the paper.
+    1. Correctly specified model with no redundant covariates.
+    2. One additional redundant individual-level covariate based on 1.
+    3. One additional redundant cluster-level covariate based on 1.
+    4. One additional redundant individual-level covariate and one additional redundant cluster-level covariate based on 1.
+- `true.model`: the data-generating model (1st table: A, B, C, D; 2nd table: B, D). More details in the paper.
+    A.  No prognostic covariates.
+    B.  Simulation 1: one individual-level prognostic covariate; Simulation 2: three individual-level prognostic covariates.
+    C.  One cluster-level prognostic covariate.
+    D.  Simulation 1: one individual-level prognostic covariate and one cluster-level prognostic covariate; Simulation 2: three individual-level prognostic covariates and one cluster-level prognostic covariate.
+- `method`: the form of the test of the treatment effect (LRT vs Wald).
+- `ddf`: method to compute the denominator degree of freedom (BW1, BW2, containment, residual).
+- `type.I.error`: type I error rate of the test (estimated from 5,000 Monte Carlo runs).
+
+In the figures in the paper, we present
+
+1. scenarios with true model D and fitted model 1 in Simulation 1
+2. scenarios with true model D and fitted model 4 in Simulation 2
+
+# Type I error rates from Simulation 1
+
+```{r,echo=FALSE,message=FALSE,results='asis'}
+library(reactable)
+table1<-read.csv("simulation1_typeIerror.csv")
+reactable(table1,sortable=T,resizable=T,filterable=T,pagination=T,defaultPageSize=10,showPagination=T,showPageSizeOptions=T,compact=T,showSortIcon=T,columns=list(
+    outcome.type=colDef(minWidth=120),
+    n.cluster=colDef(minWidth=80),
+    mean.size=colDef(minWidth=80),
+    coef.var=colDef(minWidth=70),
+    ICC=colDef(minWidth=50),
+    ICC2=colDef(minWidth=50,format=colFormat(digits=3)),
+    model=colDef(minWidth=60),
+    method=colDef(minWidth=70),
+    type.I.error=colDef(format=colFormat(digits=4))
+))
+```
+
+# Type I error rates from Simulation 2
+
+```{r,echo=FALSE,results='asis'}
+table2<-read.csv("simulation2_typeIerror.csv")
+reactable(table2,sortable=T,resizable=T,filterable=T,pagination=T,defaultPageSize=10,showPagination=T,showPageSizeOptions=T,compact=T,showSortIcon=T,columns=list(
+    outcome.type=colDef(minWidth=120),
+    n.cluster=colDef(minWidth=80),
+    mean.size=colDef(minWidth=80),
+    coef.var=colDef(minWidth=70),
+    ICC=colDef(minWidth=50),
+    ICC2=colDef(minWidth=50,format=colFormat(digits=3)),
+    model=colDef(minWidth=60),
+    method=colDef(minWidth=70),
+    type.I.error=colDef(format=colFormat(digits=4))
+))
+```
+
